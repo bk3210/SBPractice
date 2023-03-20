@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<ul>
+{{#sList}}
+	<li>{{.}}</li>
+{{/sList}}
+</ul>
+
+<ul>
+{{#boardList}}
+	<li>{{seq}}{{title}}{{writer}}{{contents}}</li>
+{{/boardList}}
+</ul>
+
+<!-- if문 대체(session 객체 안에 userid값(키값)이 있다면, username님 안녕하세요 출력
+ ^: 만약 없다면(else) 로그인하세요 출력) -->
+<h1>
+{{#userid}}
+{{username}}님 안녕하세요
+{{/userid}}
+{{^userid}}
+로그인하세요
+{{/userid}}
+</h1>
+</body>
+</html>

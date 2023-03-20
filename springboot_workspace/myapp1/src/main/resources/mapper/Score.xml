@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Score">
+
+	<select id="Score_getTotalCnt" parameterType="ScoreDTO"
+		resultType="Integer">
+		select count(*)
+		from tb_score
+	</select>
+
+	<select id="Score_getList" parameterType="ScoreDTO"
+		resultType="ScoreDTO">
+		select
+			A.seq
+			, A.name
+			, A.kor
+			, A.mat
+			, A.eng
+			, to_char(wdate, 'yyyy-MM-dd') wdate
+			, rnum
+		from (
+			select
+				A.seq
+				, A.name
+				, A.kor
+				, A.mat
+				, A.eng
+				, A.wdate
+				, row_number() over(order by seq desc) rnum
+			from tb_score A
+		) A
+	</select>
+</mapper>

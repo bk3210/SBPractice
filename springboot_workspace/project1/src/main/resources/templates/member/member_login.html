@@ -1,0 +1,71 @@
+{{>layout/header}}
+{{>layout/nav}}
+
+<form name="myform" id="myform">
+<div class="container mt-3">
+  <h3>로그인</h3>
+  
+
+   <table class="table">
+   	<colgroup>
+   		<col width="30%">
+   		<col width="*">
+   	</colgroup>
+    <tbody>
+      <tr>
+        <th>아이디</td>
+        <td>
+        	 <div class="input-group">
+			    <input type="text" class="form-control" 
+			    placeholder="아이디를 입력하세요"
+			    name="user_id" id="user_id">
+			    
+			 </div>
+        </td>
+      </tr>
+      <tr>
+        <th>패스워드</td>
+        <td>
+        	 <div class="input-group">
+			    <input type="password" class="form-control" 
+			    placeholder="패스워드를 입력하세요"
+			    name="password" id="password">
+			 </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+ </div>
+
+
+ <div class="container" style="text-align:right">
+	<button type="button" id="btnLogin" class="btn btn-primary">로그인</button>
+ </div>
+</form>
+ 
+ <script>
+	$(()=>{
+		$("#btnLogin").click(()=>{
+			let data = $("#myform").serialize();
+		$.ajax({
+			url:"/member/go_login",
+			data:data,
+			type:"POST",
+			dataType:"JSON"
+		})
+		.done((res)=>{
+			alert(res.msg);
+			if(res.result=="success"){
+				location.href="/";
+			}
+		})
+		.fail((res, status, error)=>{
+			console.log(error);		
+		})
+		
+		});		
+	})
+
+ 
+ </script>
+ {{>layout/footer}}

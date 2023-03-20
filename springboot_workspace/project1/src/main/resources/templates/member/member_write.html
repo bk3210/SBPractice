@@ -1,0 +1,187 @@
+{{>layout/header}}
+{{>layout/nav}}
+
+<form name="myform" id="myform">
+	<input type="hidden" name="idcheckyn" id="idcheckyn" value="N"	/>
+<div class="container mt-3">
+  <h3>회원가입</h3>
+  
+
+   <table class="table">
+   	<colgroup>
+   		<col width="30%">
+   		<col width="*">
+   	</colgroup>
+    <tbody>
+      <tr>
+        <th>아이디</td>
+        <td>
+        	 <div class="input-group">
+			    <input type="text" class="form-control" 
+			    placeholder="아이디를 입력하세요"
+			    name="user_id" id="user_id">
+			    <button class="btn btn-primary" type="button" id="btnIdCheck">아이디중복체크</span>
+			    
+			 </div>
+        </td>
+      </tr>
+      <tr>
+        <th>패스워드</td>
+        <td>
+        	 <div class="input-group">
+			    <input type="password" class="form-control" 
+			    placeholder="패스워드를 입력하세요"
+			    name="password" id="password">
+			 </div>
+        </td>
+      </tr>
+      <tr>
+        <th>패스워드확인</td>
+        <td>
+        	 <div class="input-group">
+			    <input type="password" class="form-control" 
+			    placeholder="패스워드를 입력하세요"
+			    name="password2" id="password2">
+			 </div>
+        </td>
+      </tr>
+      <tr>
+        <th>이름</td>
+        <td>
+        	 <div class="input-group">
+			    <input type="text" class="form-control" 
+			    placeholder="이름을 입력하세요"
+			    name="user_name" id="user_name">
+			 </div>
+        </td>
+      </tr>
+      <tr>
+        <th>이메일</td>
+        <td>
+        	 <div class="input-group">
+			    <input type="email" class="form-control" 
+			    placeholder="이름을 입력하세요"
+			    name="email" id="email">
+			 </div>
+        </td>
+      </tr>
+      <tr> 
+        <th>전화번호</td>
+        <td>
+        	 <div class="input-group">
+			    <input type="tel" class="form-control" 
+			    placeholder="전화번호를 입력하세요"
+			    name="phone" id="phone">
+			 </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+ </div>
+
+
+ <div class="container" style="text-align:right">
+	<button type="button" id="btnSave" class="btn btn-primary">회원가입</button>
+ </div>
+</form>
+ 
+ <script>
+	$(()=>{
+		$("#btnIdCheck").click(()=>{
+			if($("#user_id").val().trim().length<6){
+				alert("아이디는 6자리 이상이어야 합니다.");
+				return false;	// 함수 종료
+			}
+		
+		$.ajax({
+			url:"/member/isuse",
+			data:{user_id:$("#user_id").val()},
+			type:"POST",
+			dataType:"JSON"
+		})
+		.done((res)=>{
+			alert(res.msg);
+			console.log(res);
+			if(res.result=="Y"){
+				$("#idcheckyn").val("Y");
+				$("#user_id").prop("readonly", "true");		// 서버로 값 보내는 애
+				$("#btnIdCheck").prop("disabled", "true");	// 버튼값이 넘어가지는 않음
+			}
+		})
+		.fail((res, status, error)=>{
+			console.log(error);		
+		})
+		
+	});		
+
+	
+		$("#btnSave").click(()=>{
+			if(!fnErrorCheck()){
+				return false;	// 함수 종료
+			}
+			// 파일 전송이 아닐 때는 직렬화로 전달한다
+			let data = $("#myform").serialize();		
+			$.ajax({
+				url:"/member/save",
+				data:data,
+				type:"POST",
+				dataType:"JSON"
+			})
+			.done((res)=>{
+				alert(res.msg);
+				if(res.result=="success"){
+					location.href="/";
+
+				}
+			})
+			.fail((res, status, error)=>{
+				console.log(error);		
+			})
+		});
+	})
+
+	/*
+		onclick
+		addEventListener : id를 이용해서 이벤트핸들러 추가
+		jQuery click함수 : id를 이용해서 이벤트핸들러 추가
+		최근에는 onclick을 점점 지양해가는 추세
+	*/
+	
+	function fnErrorCheck(){
+			console.log($("#idcheckyn").val());
+		if($("#idcheckyn").val()=="N"){
+			alert("아이디 중복체크를 하세요.");
+			$("#user_id").focus();
+			return false;
+		}
+		
+		if($("#user_id").val().trim().length<6){
+			alert("아이디는 6자리 이상이어야 합니다.");
+			$("#user_id").focus();
+			return false;
+			}
+		
+		if($("#password").val().trim().length<6){
+			alert("패스워드는 6자리 이상이어야 합니다.");
+			$("#password").focus();
+			return false;
+			}
+		
+		if($("#password").val()!=$("#password2").val()){
+			alert("비밀번호가 일치하지 않습니다.");
+			$("#password2").focus();
+			return false;
+			}
+		
+		if($("#user_name").val().trim().length<1){
+			alert("이름을 입력하세요.");
+			$("#user_name").focus();
+			return false;
+			}
+		return true;
+		}
+
+
+ 
+ </script>
+ {{>layout/footer}}
